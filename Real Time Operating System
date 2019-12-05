@@ -1,0 +1,21 @@
+A general definition of embedded systems is: embedded systems are computing systems with tightly coupled
+hardware and software integration, that are designed to perform a dedicated function.The word embedded reflects
+the fact that these systems are usually an integral part of a larger system, known as the embedding system. Multiple
+embedded systems can coexist in an embedding system.they are systems within systems.They either cannot or do not function on their own.
+
+In some cases, embedded systems can function as standalone systems. The network router.
+
+The processors found in common personal computers (PC) are general-purpose or universal processors.
+They are designed to be suitable for a variety of applications.These
+embedded processors are special-purpose processors designed for a specific class of applications.
+
+The key is
+application awareness, i.e., knowing the nature of the applications and meeting the requirement for those applications
+that it is designed to run.
+
+some embedded
+processors are limited in functionality, i.e., a processor is good enough for the class of applications for which it was
+designed but is likely inadequate for other classes of applications. This is one reason why many embedded
+processors do not have fast CPU speeds. For example, the processor chosen for a personal digital assistant (PDA)
+device does not have a floating-point co-processor because floating-point operations are either not needed or
+software emulation is sufficient.
