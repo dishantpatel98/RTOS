@@ -391,3 +391,28 @@ let us understand
                 the context of RTOS, with MPU model 
                 --->some of the techniques/skills
                     are required, in this MPU model 
+---->non-MPU model is relatively simpler      
+         --> BSP is low-level sw 
+             supporting chip features and board
+             features, including chip initialization, 
+             chip specific device-drivers, and board
+             specific device drivers.
+             
+->so, in our context, HAL means low-level 
+             sw that deals, with stack management, 
+             privilege managment, interrupt management 
+             , exception managment,processor's 
+             hw timer  management, MPU management 
+             and others, if any
+             --->it is a core component of 
+                 a RTOS/EOS platform 
+           ->there are bare-metal HALs and BSPs, 
+             as well as EOS/RTOS-aware HALs and 
+             BSPs             
+             
+->it is very common to find Vendors 
+             providing bare-metal HALs and BSPs, 
+             that can be modified and used by 
+             embedded developers
+             
+             
