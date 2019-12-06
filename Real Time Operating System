@@ -115,3 +115,22 @@ executes when. To understand how scheduling works, this section describes the fo
 #Schedulable entities:
 Tasks and processes are all examples of schedulable entities found in most kernels.
 
+
+
+why we need conventional, as well as unconventional RTOS platforms?
+   -->conventional embedded sw development are 
+      more closer to bare-metal embedded 
+      sw platforms
+         -->a bare-metal embedded sw platform will be 
+            OS-unaware 
+         -->these stacks will be light-weight and very 
+            thin 
+         -->application/jobs will be closely coupled, 
+            with the embedded hw platform and its 
+            features
+         -->in bare-metal platforms, overheads due to 
+            resource management and 
+            run-time management will be 
+            very less      
+
+
