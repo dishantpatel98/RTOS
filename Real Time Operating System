@@ -132,5 +132,262 @@ why we need conventional, as well as unconventional RTOS platforms?
             resource management and 
             run-time management will be 
             very less      
+->typically, such a bare-metal stack will 
+       not support multi-tasking and OS related
+       features, but just chip drivers and support
+       for a "super-loop based application" - "a simple 
+       while loop, that keeps processing one or more
+       jobs - there is no multitasking of jobs"   
+     ->typically for an embedded application, the 
+       stack will be a thin layer/component/module
+       on top which the application/jobs are built
+     ->which means, the application is very tightly 
+       coupled, with the underlying hw platform/
+       architecture/peripherals
+     ->in "this context of super-loop model/design", 
+       timing/real-time issues can be a problem, due to 
+       latencies/jitters and accumulated latencies/
+       jitters - if one 
+       of the job's is facing timing problems/latencies/
+       jitters, 
+       this will propagate to other jobs of the 
+       super-loops and 
+       affect the timing performance of the 
+       other jobs 
+     
+-->in the bare-metal case, the design 
+           is similar to a single threaded application
+           --->there is just a single main, 
+               which is the only thread of 
+               execution, in the system  
+        
+-->timing/real-time issues of jobs cannot be 
+           satisfied - due to lack of multi-tasking/
+           scheduling/prioritization 
+           
+           -->multi-tasking and scheduling of jobs 
+           cannot be satisfied 
+        -->prioritization of jobs/tasks cannot be 
+           done 
+        -->related issues, like blocking and wake-up 
+           of separate jobs is not possible
+           --->we may implement certain interrupt 
+               based techniques, but not as good
+               as OS blocking mechanisms
+               
+-->the system programs the systick to generate 
+            periodic interrupts, for processing 
+            a cyclic scheduler 
+        -->whenever there is a periodic systick 
+           event,  cyclic scheduler is invoked/
+           triggered /processed 
+        -->there is a well defined tasks' list 
+           , with appropriate parameters 
+           -->there will be a TCB/task control 
+              block/a system object to manage a
+              task/thread - in this context, 
+              tasks are unconventional threads   
+            -->TCB will contain period of a task/
+               task method 
+            -->TCB will contain task method's address
+            -->each task method is assigned 
+               an embedded job 
+            -->TCB will contain a time-offset, for 
+               the first scheduling/processing of the 
+               task/method 
+               
+    -->there is no time-slice 
+             -->task methods are processed - there 
+                is no blocking support, for tasks -
+                the cyclic scheduler will scan the 
+                list of TCBs, in the list and process
+                their methods, as per the parameters, 
+                in the TCBs, based on offset/period  
+             -->the cyclic scheduler is a co-operative 
+                scheduler
+             -->job of a task will have WCET/worst case
+                execution time(real-time parameter/ 
+                               performance)
+--->WCET is a real-time performance parameter, 
+    for real-time sensitive applications/jobs
+    
+           -->if WCETs are unacceptable, other
+              tasks' methods will be affected - 
+              their scheduling/release times 
+              are affected
+      -->many of the above details are part of task 
+         modelling/designing - designing tasks, for 
+         jobs of an application, based on the 
+         application's requirements, including 
+         periodic tasks, period of tasks, offsets of 
+         tasks, tick period, ordering of tasks, and 
+         many more               
+               
+--->in these simpler embedded sw platforms, 
+       simple multitasking is provided :
+       --->no blocking 
+       --->no preemption(special cases may exist)
+       --->only ready and running states, for 
+           tasks 
+       --->only one form of scheduling policy 
+ 
+ 
+the platform will be supported, 
+       by a "single address-space", "without protection, 
+       in a conventional RTOS system
+       
+       
+-->what is the meaning of single address-space and
+           without memory protection ???
+            -->in these contexts, let us assume, that 
+               a single physical address-space is used
+         --->still, there will segments/regions
+             and their characteristics
+--->many of these hw features are based on the 
+    hw platforms 
+            -->code/data of application/tasks, as well
+               as code/data of RTOS will be resident, in 
+               a single address-space - in fact, code/data of 
+               application/tasks and code/data of RTOS 
+               are linked and grouped together - 
+               this is very similar to bare-metal embedded
+               platforms
+ 
+        --->a single embedded sw image is generated, 
+                   containing RTOS code/data and application/
+                   tasks code and data 
+        
+        
+      -->what is the meaning of no memory protection ??
+               -->data of application and RTOS are unprotected
+               -->for instance, if a task illegally 
+                  attempts to modify a system object, 
+                  it will be allowed to do so - system 
+                  data is unprotected
+               -->if there is a stack overflow, in a task's
+                  stack region, it can affect another task's
+                  data or system data - this is also an 
+                  unprotected memory management   
+--->all these are due to a single address-space 
+    set-up
+  
+  
+       ->for instance, in the context a conventional 
+           RTOS, it may not be using MPU services or 
+           may be using MPU services - most likely, 
+           may not use MPU services, for regular 
+           applications - "non-MPU model is the more 
+           likely design"
+            -->in the case of conventional RTOS, 
+               the port may be a "non-MPU port" - 
+               meaning, MPU is disabled and no form 
+               of memory protection is supported, for 
+               application/jobs/tasks and RTOS code/data 
+            -->initially, let us assume, that we will 
+               be working, with non-MPU ports 
+ 
+ ---->however, working, with MPU port RTOS is more 
+     challenging, practically
+     
+     
+     ->will support well defined "sw timer management 
+       and related frame-works" - these "sw timers are
+       built on top of hw timers and RTOS frame-works" 
+       to support tasks/jobs 
+        --->based on the requirements, we can 
+            have reasonable number of sw timers
+            --->since hw timers are limited, 
+                sw timers can be easily/reasonably 
+                provided to applications
+           --->continue reading, for more 
+               practical discussions on sw timers 
+--->some of the following points are embedded related 
+     ->will support a well defined RTOS-aware HAL, 
+       for interacting with processor architecture
+       and chip/board features
+        -->RTOS-aware processor HAL(abstraction)
+           -->this HAL layer is fine tuned, for 
+              RTOS requirements 
+           -->services provided by this HAL will be 
+              used , by RTOS core components  
+        -->RTOS-aware chip/board bsp/drivers(chip/board)
+        
+############Task Management
+
+-->   -->tasks are managed, using TCBs - in addition, as 
+      per the current state of tasks/TCBs, they are 
+      managed, in different system lists:
+
+let us understand
+     the design and details of a typical,conventional 
+     RTOS platforms, from "embedded perspective" :
+
+->single address-space design
+        ->the processor/controller may have MPU 
+          , but disabled 
+        ->since the MPU is disabled, a there is 
+          a default physical memory map of the processor/
+          controller that is effective 
+           -->some region/segment, for all code
+           -->some region/segment, for all data/stack/heap
+                 --->rtos needs to manage more 
+                     stack segments 
+           -->there will one or more memory-mapped 
+              IO segments/regions
+           -->there may be other segments/regions, 
+              for other embedded requirements  
+        ->in this default set-up, "single memory-map/
+          address-space", code of application and 
+          code of RTOS components are linked and 
+          resident, in a single memory region/
+          segment 
+        ->in this default set-up, single memory-map/
+          address-space, "data of application and 
+          data of RTOS components are linked and 
+          resident", in a single memory region/
+          segment 
+        ->for conventional/simple RTOS designs/models, 
+          we do not have logical addresses/virtual 
+          addresses - later, we will see different 
+          RTOS designs/models, with logical address-spaces
+          and virtual address-spaces  
+        ->this set-up is due to hw memory-map 
+          and used, as single address-space by 
+          RTOS and application - there are no 
+          restrictions/protections, for application code to 
+          access RTOS code or RTOS data - this can 
+          be vulnerable/unreliable, for certain 
+          critical applications/systems
 
 
+
+---->in a typical bare-metal embedded application, 
+     we may just use a single stack or two stacks, 
+     not more  
+          ->these task stack memory regions are associated
+            with PSP of the processor - meaning, they 
+            will be used/effective, in the context 
+            of execution of a specific task/job, 
+            in thread mode of the processor - for 
+            each task, there is a separate thread mode
+            stack - as per the specific task/task method, 
+            PSP is switched to appropriate thread mode stack
+             -->no. of thread mode stacks will be same
+                as that of no. of tasks/jobs 
+             -->no. of main stacks ?? only one  
+             -->these are true, for a specific design   
+          ->in this set-up, we need to configure/
+            re-configure physical address-space /
+            segments, as per application requirements, 
+            but subject to the rules of RTOS
+          ->we will be using certain embedded techniques, 
+            for changing the memory-map /layout, along 
+            with RTOS configuration /initialization 
+            techniques/more skills 
+             -->explore linker scripts and their 
+                scripting techniques - refer to 
+                good embedded sw references 
+             -->we will see certain scenarios, in 
+                the context of RTOS, with MPU model 
+                --->some of the techniques/skills
+                    are required, in this MPU model 
