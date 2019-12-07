@@ -414,5 +414,86 @@ let us understand
              providing bare-metal HALs and BSPs, 
              that can be modified and used by 
              embedded developers
+    ->it is very uncommon to find vendors
+             providing EOS/RTOS-aware HALs and 
+             BSPs -even if provided, will be 
+             incomplete and need changes and 
+             thorough testing - most of these 
+             points apply to RTOS , as well as 
+             Embedded Linux systems
+      
+->for a given hw platform, with "a cpui, 
+               chipj and boardj combination", there will be an 
+               HALi and BSPj 
+          ->for another given hardware platform, with 
+               "a cpui, chipj+1 and boardj+1", there will 
+               be an HALi and BSPj+1
+             ->in the above cases, EOS core/RTOS core 
+               mostly remains the same and it is 
+               portable,using different HAL/BSP modules, 
+               as per requirements 
+               -->a good set of scenarios, for 
+                  modularity       
+     in this conventional 
+            RTOS set-up, there are no system call
+            APIs/system calls
+            
+             --->what happens, if a system APIi of 
+          RTOS core is invoked, by the current 
+          task/currently scheduled task/task method  ??
+          -->in this model, there is a single 
+             address-space and task/method execute
+           , with privilege level 
+          -->so, there is no need, for mode switch/
+             privilege-level switch
+          -->so, this RTOS system just exports/provides 
+             system APIs, not system call APIs 
+          -->when a system API is invoked, there 
+             is "no mode-switch/privilege level 
+             switch/no stack switch"
+          --->our embedded application is typically 
+             linked to RTOS library/code/data, 
+             statically - no separate RTOS image/
+             system space  
+          -->system API is still processed, in the 
+             same task context - all the rules 
+             of a typical task context apply
+         --->since it is a task context, cpu mode
+             is thread mode 
+          -->the stack used is thread mode stack of 
+             the thread  
+          -->this execution is, as good as 
+             a typical task method's execution 
+          -->however, if the system API is a blocking 
+             system API, it may block the current 
+             task /TCB and invoke the RTOS 
+             cpu scheduler           
+          -->execution of system APIs is also known 
+             as kernel execution paths of RTOS core
+           - in addition, as per the design, in 
+             any of the kernel execution paths, 
+             processor will be, in privileged 
+             level
+           - as per the design, tasks/task methods
+             will be executed, in thread mode of 
+             the processor
+           - most kernel paths of execution are 
+             executed, in thread mode of the processor
              
-             
+if a task is executing 
+             and a hw interrupt event is generated, 
+             there will be a special jump and 
+             corresponding RTOS-aware-ISR will 
+             be invoked  
+             --->context of execution will be 
+                 interrupt context + there will 
+                 a stack switch to MSP stack +
+                 mode switch to handler mode +
+                 continues, in privileged level  
+-->task periods and offsets are 
+           typically provided to 
+           control the periodic executions of 
+           tasks - it may also be used to 
+           control the order of execution of tasks 
+          , as per task modelling/design patterns               
+1154
